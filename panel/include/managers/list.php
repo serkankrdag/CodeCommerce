@@ -1,0 +1,325 @@
+<?php function managers() { global $db;
+
+    $controle='';
+    if (isset($_POST['insert'])) {
+
+        $name = $_POST['name'];
+        $phone = $_POST['phone'];
+        $email = $_POST['email'];
+        $password = md5(sha1($_POST['password']));
+        $description = $_POST['description'];
+        $adress = $_POST['adress'];
+        $city = $_POST['city'];
+        $district = $_POST['district'];
+        $postCode = $_POST['postCode'];
+        $country = $_POST['country'];
+
+        if ($name!='' && $phone!='' && $email!='' && $password!='' && $city!='' && $country!='') {
+            $sorgu = $db->query("select * from managers where email='$email'")->fetch();
+            if (!$sorgu) {
+                $ekle = $db->exec("
+                insert into managers set 
+                name = '$name',
+                phone = '$phone',
+                email = '$email',
+                password = '$password',
+                description = '$description',
+                adress = '$adress',
+                city = '$city',
+                district = '$district',
+                postCode = '$postCode',
+                country = '$country'
+                ");
+            } else {
+                $controle=
+                '
+                <div class="alert alert-danger d-flex align-items-danger p-5">
+                    <span class="svg-icon svg-icon-2hx svg-icon-danger me-3">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path opacity="0.3" d="M20.5543 4.37824L12.1798 2.02473C12.0626 1.99176 11.9376 1.99176 11.8203 2.02473L3.44572 4.37824C3.18118 4.45258 3 4.6807 3 4.93945V13.569C3 14.6914 3.48509 15.8404 4.4417 16.984C5.17231 17.8575 6.18314 18.7345 7.446 19.5909C9.56752 21.0295 11.6566 21.912 11.7445 21.9488C11.8258 21.9829 11.9129 22 12.0001 22C12.0872 22 12.1744 21.983 12.2557 21.9488C12.3435 21.912 14.4326 21.0295 16.5541 19.5909C17.8169 18.7345 18.8277 17.8575 19.5584 16.984C20.515 15.8404 21 14.6914 21 13.569V4.93945C21 4.6807 20.8189 4.45258 20.5543 4.37824Z" fill="currentColor"></path>
+                            <path d="M10.5606 11.3042L9.57283 10.3018C9.28174 10.0065 8.80522 10.0065 8.51412 10.3018C8.22897 10.5912 8.22897 11.0559 8.51412 11.3452L10.4182 13.2773C10.8099 13.6747 11.451 13.6747 11.8427 13.2773L15.4859 9.58051C15.771 9.29117 15.771 8.82648 15.4859 8.53714C15.1948 8.24176 14.7183 8.24176 14.4272 8.53714L11.7002 11.3042C11.3869 11.6221 10.874 11.6221 10.5606 11.3042Z" fill="currentColor"></path>
+                        </svg>
+                    </span>
+                    <div class="d-flex flex-column">
+                        <h4 class="mb-1 text-dark">Yönetici Eklenemedi</h4>
+                        <span>Yönetici ekleme işlemi başarısız girilen E-posta kullanılıyor.</span>
+                    </div>
+                </div>
+                ';
+            }
+        }
+    }
+
+
+    if(isset($_POST['sil'])){
+        $id = $_POST["id"];
+        $sorgu = $db->query("select * from managers where id='$id'")->fetch();
+        if ($sorgu['picture']!=''){
+            $file = "../upload/managers/".$sorgu['picture'];
+            unlink($file);
+        }
+        $kayitSil = $db->exec("DELETE FROM managers WHERE id='$id' limit 1");
+
+        if($kayitSil) {
+            $controle=
+                '
+                <div class="alert alert-success d-flex align-items-success p-5">
+                    <span class="svg-icon svg-icon-2hx svg-icon-success me-3">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path opacity="0.3" d="M20.5543 4.37824L12.1798 2.02473C12.0626 1.99176 11.9376 1.99176 11.8203 2.02473L3.44572 4.37824C3.18118 4.45258 3 4.6807 3 4.93945V13.569C3 14.6914 3.48509 15.8404 4.4417 16.984C5.17231 17.8575 6.18314 18.7345 7.446 19.5909C9.56752 21.0295 11.6566 21.912 11.7445 21.9488C11.8258 21.9829 11.9129 22 12.0001 22C12.0872 22 12.1744 21.983 12.2557 21.9488C12.3435 21.912 14.4326 21.0295 16.5541 19.5909C17.8169 18.7345 18.8277 17.8575 19.5584 16.984C20.515 15.8404 21 14.6914 21 13.569V4.93945C21 4.6807 20.8189 4.45258 20.5543 4.37824Z" fill="currentColor"></path>
+                            <path d="M10.5606 11.3042L9.57283 10.3018C9.28174 10.0065 8.80522 10.0065 8.51412 10.3018C8.22897 10.5912 8.22897 11.0559 8.51412 11.3452L10.4182 13.2773C10.8099 13.6747 11.451 13.6747 11.8427 13.2773L15.4859 9.58051C15.771 9.29117 15.771 8.82648 15.4859 8.53714C15.1948 8.24176 14.7183 8.24176 14.4272 8.53714L11.7002 11.3042C11.3869 11.6221 10.874 11.6221 10.5606 11.3042Z" fill="currentColor"></path>
+                        </svg>
+                    </span>
+                    <div class="d-flex flex-column">
+                        <h4 class="mb-1 text-dark">Yönetici Silindi</h4>
+                        <span>Yönetici silme işlemi başarılı bir şekilde gerçekleşti.</span>
+                    </div>
+                </div>
+                ';
+        } elseif (!$kayitSil) {
+            $controle=
+                '
+                <div class="alert alert-danger d-flex align-items-danger p-5">
+                    <span class="svg-icon svg-icon-2hx svg-icon-danger me-3">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path opacity="0.3" d="M20.5543 4.37824L12.1798 2.02473C12.0626 1.99176 11.9376 1.99176 11.8203 2.02473L3.44572 4.37824C3.18118 4.45258 3 4.6807 3 4.93945V13.569C3 14.6914 3.48509 15.8404 4.4417 16.984C5.17231 17.8575 6.18314 18.7345 7.446 19.5909C9.56752 21.0295 11.6566 21.912 11.7445 21.9488C11.8258 21.9829 11.9129 22 12.0001 22C12.0872 22 12.1744 21.983 12.2557 21.9488C12.3435 21.912 14.4326 21.0295 16.5541 19.5909C17.8169 18.7345 18.8277 17.8575 19.5584 16.984C20.515 15.8404 21 14.6914 21 13.569V4.93945C21 4.6807 20.8189 4.45258 20.5543 4.37824Z" fill="currentColor"></path>
+                            <path d="M10.5606 11.3042L9.57283 10.3018C9.28174 10.0065 8.80522 10.0065 8.51412 10.3018C8.22897 10.5912 8.22897 11.0559 8.51412 11.3452L10.4182 13.2773C10.8099 13.6747 11.451 13.6747 11.8427 13.2773L15.4859 9.58051C15.771 9.29117 15.771 8.82648 15.4859 8.53714C15.1948 8.24176 14.7183 8.24176 14.4272 8.53714L11.7002 11.3042C11.3869 11.6221 10.874 11.6221 10.5606 11.3042Z" fill="currentColor"></path>
+                        </svg>
+                    </span>
+                    <div class="d-flex flex-column">
+                        <h4 class="mb-1 text-dark">Yönetici Silinemedi</h4>
+                        <span>Yönetici silme işlemi başarısız lütfen tekrar deneyin.</span>
+                    </div>
+                </div>
+                ';
+        }
+    }
+
+    breadcrumb('Kontrol Panel','Yöneticiler','Yönetici Listeleme'); ?>
+
+    <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
+        <div class="container-xxl" id="kt_content_container">
+
+            <?=$controle?>
+            <div id="kt_app_content" class="app-content  flex-column-fluid ">
+                <div id="kt_app_content_container" class="app-container  container-xxl ">
+                    <div class="card card-flush">
+                        <div class="card-header align-items-center py-5 gap-2 gap-md-5">
+                            <div class="card-title">
+                                <div class="d-flex align-items-center position-relative my-1">
+                                    <span class="svg-icon svg-icon-1 position-absolute ms-4">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <rect opacity="0.5" x="17.0365" y="15.1223" width="8.15546" height="2" rx="1" transform="rotate(45 17.0365 15.1223)" fill="currentColor"></rect>
+                                            <path d="M11 19C6.55556 19 3 15.4444 3 11C3 6.55556 6.55556 3 11 3C15.4444 3 19 6.55556 19 11C19 15.4444 15.4444 19 11 19ZM11 5C7.53333 5 5 7.53333 5 11C5 14.4667 7.53333 17 11 17C14.4667 17 17 14.4667 17 11C17 7.53333 14.4667 5 11 5Z" fill="currentColor"></path>
+                                        </svg>
+                                    </span>
+                                    <input type="text" data-kt-filter="search" class="form-control form-control-solid w-250px ps-14" placeholder="Yönetici Ara" />
+                                </div>
+                                <div id="kt_datatable_example_1_export" class="d-none"></div>
+                            </div>
+
+                            <div class="card-toolbar flex-row-fluid justify-content-end gap-5">
+                                <a href="javascript:void(0)" class="btn btn-danger">
+                                    <i class="fas fa-trash-alt fs-7"></i> Toplu Sil
+                                </a>
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_add_customer">
+                                    Yönetici Ekle
+                                </button>
+                            </div>
+                        </div>
+
+
+                        <div class="card-body pt-0">
+                            <div id="kt_ecommerce_products_table_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer">
+                                <div class="table-responsive">
+                                    <table class="table align-middle table-row-dashed fs-6 gy-5 dataTable no-footer" id="kt_datatable_example">
+                                        <thead>
+                                        <tr class="text-start text-gray-400 fw-bold fs-7 text-uppercase gs-0">
+                                            <th class="w-10px pe-2 sorting_disabled" rowspan="1" colspan="1" aria-label="" style="width: 29.8906px;">
+                                                <div class="form-check form-check-sm form-check-custom form-check-solid me-3">
+                                                    <input class="form-check-input" type="checkbox" data-kt-check="true" data-kt-check-target="#kt_ecommerce_products_table .form-check-input" value="1">
+                                                </div>
+                                            </th>
+                                            <th class="min-w-200px sorting" tabindex="0" aria-controls="kt_ecommerce_products_table" rowspan="1" colspan="1" aria-label="Yönetici Adı" style="width: 275.812px;">Yönetici Adı</th>
+                                            <th class="min-w-100px sorting" tabindex="0" rowspan="1" colspan="1" aria-label="Barkod" style="width: 139.656px;">E-posta</th>
+                                            <th class="min-w-100px sorting" tabindex="0" rowspan="1" colspan="1" aria-label="Durum" style="width: 139.656px;">Durum</th>
+                                            <th class="text-end min-w-100px sorting_disabled" rowspan="1" colspan="1" aria-label="Actions" style="width: 139.656px;">İşlem</th>
+                                        </tr>
+                                        </thead>
+
+                                        <tbody class="fw-semibold text-gray-600" id="table">
+                                        <?php $managers = $db->query("select * from managers order by id ASC")->fetchAll();
+                                        foreach($managers as $manager) { ?>
+                                        <tr class="odd">
+                                            <td>
+                                                <div class="form-check form-check-sm form-check-custom form-check-solid">
+                                                    <input class="form-check-input" type="checkbox" value="1">
+                                                </div>
+                                            </td>
+
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <a href="javascript:void(0)" class="symbol symbol-50px">
+                                                        <span class="symbol-label" style="background-image:url(../upload/managers/<?=$manager['picture']?>);"></span>
+                                                    </a>
+
+                                                    <div class="ms-5">
+                                                        <a href="javascript:void(0)" class="text-gray-800 text-hover-primary fs-5 fw-bold" data-kt-ecommerce-product-filter="product_name"><?=$manager['name']?></a>
+                                                    </div>
+                                                </div>
+                                            </td>
+
+                                            <td class="pe-0">
+                                                <span class="fw-bold"><?=$manager['email']?></span>
+                                            </td>
+
+                                            <?php $status = ($manager['status'] == '1') ? '<div class="badge badge-light-success">Aktif</div>' : '<div class="badge badge-light-danger">pasif</div>'; ?>
+                                            <td class="pe-0" data-order="Scheduled"><?=$status?></td>
+
+                                            <form method="post">
+                                                <input type="hidden" name="id" value="<?=$manager['id']?>">
+                                                <td class="text-end">
+                                                    <a href="managersView/<?=$manager['id']?>" class="btn btn-icon btn-light-primary btn-sm"><i class="far fa-edit fs-7"></i></a>
+                                                    <button name="sil" type="submit" class="btn btn-icon btn-light-danger btn-sm"><i class="fas fa-trash-alt fs-7"></i></button>
+                                                </td>
+                                            </form>
+                                        </tr>
+                                        <?php } ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="kt_modal_add_customer" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered mw-650px">
+            <div class="modal-content">
+                <form class="form" method="post">
+                    <div class="modal-header" id="kt_modal_add_customer_header">
+                        <h2 class="fw-bold">Yönetici Ekle</h2>
+
+                        <a href="managers">
+                            <div id="kt_modal_add_customer_close" class="btn btn-icon btn-sm btn-active-icon-primary">
+                                <span class="svg-icon svg-icon-1">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="currentColor"/>
+                                        <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="currentColor"/>
+                                    </svg>
+                                </span>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="modal-body py-10 px-lg-17">
+                        <div class="scroll-y me-n7 pe-7" id="kt_modal_add_customer_scroll" data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}" data-kt-scroll-max-height="auto" data-kt-scroll-dependencies="#kt_modal_add_customer_header" data-kt-scroll-wrappers="#kt_modal_add_customer_scroll" data-kt-scroll-offset="300px">
+                            <div class="fv-row mb-7">
+                                <label class="required fs-6 fw-semibold mb-2">Ad Soyad</label>
+
+                                <input type="text" class="form-control form-control-solid" placeholder="" name="name" value="" />
+                            </div>
+
+                            <div class="fv-row mb-7">
+                                <label class="fs-6 fw-semibold mb-2">
+                                    <span class="required">Telefon Numarası</span>
+                                </label>
+
+                                <input type="text" class="form-control form-control-solid" placeholder="" name="phone" value="" />
+                            </div>
+
+                            <div class="fv-row mb-7">
+                                <label class="fs-6 fw-semibold mb-2">
+                                    <span class="required">E-posta</span>
+
+                                    <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" title="E-posta adresi aktif olmalıdır"></i>
+                                </label>
+
+                                <input type="email" class="form-control form-control-solid" placeholder="" name="email" value="" />
+                            </div>
+
+                            <div class="fv-row mb-7">
+                                <label class="fs-6 fw-semibold mb-2">
+                                    <span class="required">Şifre</span>
+                                </label>
+
+                                <input type="password" class="form-control form-control-solid" placeholder="" name="password" value="" />
+                            </div>
+
+                            <div class="fv-row mb-15">
+                                <label class="fs-6 fw-semibold mb-2">Açıklama</label>
+
+                                <input type="text" class="form-control form-control-solid" placeholder="" name="description" />
+                            </div>
+
+                            <div class="fw-bold fs-3 rotate collapsible mb-7" data-bs-toggle="collapse" href="#kt_modal_add_customer_billing_info" role="button" aria-expanded="false" aria-controls="kt_customer_view_details">
+                                Adres Bilgisi
+                                </span>
+                            </div>
+
+                            <div id="kt_modal_add_customer_billing_info" class="collapse show">
+                                <div class="d-flex flex-column mb-7 fv-row">
+                                    <label class="required fs-6 fw-semibold mb-2">Adres satırı</label>
+
+                                    <input class="form-control form-control-solid" placeholder="" name="adress" value="" />
+                                </div>
+
+                                <div class="d-flex flex-column mb-7 fv-row">
+                                    <label class="required fs-6 fw-semibold mb-2">Şehir</label>
+
+                                    <input class="form-control form-control-solid" placeholder="" name="city" value="" />
+                                </div>
+
+                                <div class="row g-9 mb-7">
+                                    <div class="col-md-6 fv-row">
+                                        <label class="required fs-6 fw-semibold mb-2">İlçe</label>
+
+                                        <input class="form-control form-control-solid" placeholder="" name="district" value="" />
+                                    </div>
+
+                                    <div class="col-md-6 fv-row">
+                                        <label class="required fs-6 fw-semibold mb-2">Posta Kodu</label>
+
+                                        <input class="form-control form-control-solid" placeholder="" name="postCode" value="" />
+                                    </div>
+                                </div>
+
+                                <div class="d-flex flex-column mb-7 fv-row">
+                                    <label class="fs-6 fw-semibold mb-2">
+                                        <span class="required">Ülke</span>
+
+                                        <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" title="Yaşadığınız Ülkeyi Seçin"></i>
+                                    </label>
+
+                                    <select name="country" aria-label="Select a Country" data-control="select2" data-placeholder="Bir ülke seçin..." data-dropdown-parent="#kt_modal_add_customer" class="form-select form-select-solid fw-bold">
+                                        <option value="">Bir ülke seçin...</option>
+                                        <option value="TR" >Türkiye</option>
+                                        <option value="ING" >İngiltere</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer flex-center">
+                        <a href="managers" class="btn btn-light me-3">
+                            İptal
+                        </a>
+
+                        <button name="insert" type="submit" id="kt_modal_add_customer_submit" class="btn btn-primary">
+                            <span class="indicator-label">
+                                Kaydet
+                            </span>
+                            <span class="indicator-progress">
+                                Lütfen bekleyin... <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                            </span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+<?php }
