@@ -1,4 +1,4 @@
-# CodeCommerce
+# CodeCommerce 
 
 CodeCommerce is an open-source PHP project for developing secure and customizable e-commerce web applications. This project aims to provide developers with a robust foundation and a set of essential features to build their own e-commerce platforms quickly.
 
